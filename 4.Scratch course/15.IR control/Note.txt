@@ -1,0 +1,3 @@
+!Note:
+1.In order to avoid the interference of sunlight on infrared sensor, we need to carry out this experiment indoors.
+2.During remote control, the infrared remote control needs to face the infrared receiver on the expansion board.
