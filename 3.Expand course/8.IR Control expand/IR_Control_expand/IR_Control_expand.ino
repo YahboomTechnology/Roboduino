@@ -73,7 +73,7 @@ IRrecv irrecv(RECV_PIN);
 decode_results results;
 unsigned long last = millis();
 
-static int CarSpeedControl = 150;
+static int CarSpeedControl = 100;
 static int g_carstate = enSTOP;		
 //1:advance 2:back 3:left 4:right 5:spin left 6:spin right 7:stop
 static int g_modeSelect = 0;  
@@ -995,4 +995,3 @@ void loop()
     }
   }
 }
-
