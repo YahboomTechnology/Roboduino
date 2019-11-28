@@ -70,7 +70,7 @@ IRrecv irrecv(RECV_PIN);
 decode_results results;
 unsigned long last = millis();
 int Servo_LR = 90;
-static int CarSpeedControl = 150;
+static int CarSpeedControl = 100;
 static int g_carstate = enSTOP;		
 //1:advance 2:back 3:left 4:right 5:spin left 6:spin right 7:stop
 
@@ -479,13 +479,13 @@ void loop()
     //Num 1 button
     case 0x00FF08F7: 
                     Onboard_RGB(255,0,0);   
-                    mRgb.setColor(0,RGB_GREEN);  //There are two RGB light on the Ultrasonic module No.1 and No.2, 0 means both lights are lit
+                    mRgb.setColor(0,RGB_RED);  //There are two RGB light on the Ultrasonic module No.1 and No.2, 0 means both lights are lit
                     mRgb.show();  
                     break;
     //Num 2 button
     case 0x00FF8877:
                     Onboard_RGB(0,255,0);   
-                    mRgb.setColor(0,RGB_RED);  //There are two RGB light on the Ultrasonic module No.1 and No.2, 0 means both lights are lit
+                    mRgb.setColor(0,RGB_GREEN);  //There are two RGB light on the Ultrasonic module No.1 and No.2, 0 means both lights are lit
                     mRgb.show();
                     break;
     //Num 3 button
@@ -597,4 +597,3 @@ void loop()
     break;
   }
 }
-
