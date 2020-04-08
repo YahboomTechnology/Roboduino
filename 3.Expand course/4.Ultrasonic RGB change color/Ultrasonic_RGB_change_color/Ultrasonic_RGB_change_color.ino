@@ -22,7 +22,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40);
 #define RGB_WHITE   0xFFFFFF
 #define RGB_OFF  0x000000
 
-const int RgbPin = 12;    //Define pin of Ultrasonic RGB light
+const int RgbPin = 11;    //Define pin of Ultrasonic RGB light
 RGBLed mRgb(RgbPin,2);
 
 /**
