@@ -15,7 +15,7 @@
 #include "RGBLed.h"
 #include "avr/pgmspace.h"
 
-#define RGB_GREEN    0xFF0000    //Define different color(green,red,blue)
+#define RGB_GREEN    0xFF0000    
 #define RGB_RED   0x00FF00
 #define RGB_BLUE    0x0000FF
 #define RGB_YELLOW  0xFFFF00
@@ -27,8 +27,8 @@ const int RgbPin = 11;    //Define pin of Ultrasonic RGB light
 RGBLed mRgb(RgbPin,2);
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40);
-#define SERVOMIN 150      // this is the 'minimum' pulse length count (out of 4096)
-#define SERVOMAX 600      // this is the 'maximum' pulse length count (out of 4096)
+#define SERVOMIN 150      
+#define SERVOMAX 600      
 #define PIN 6   //Define RGB pin 
 #define MAX_LED 1 //Only a RGB light on expansion board
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(MAX_LED, PIN, NEO_RGB + NEO_KHZ800);
@@ -54,21 +54,19 @@ const int flag_time = 2000; //Time marker point interval 2s
 int newtime = 0;            //Record system current time
 int lasttime = 0;           //Record the last system time stamp point
 int g_num = 0;
-int buzzer = 10;  //Define buzzer pin
+int buzzer = 10;            //Define buzzer pin
 
 int CarSpeedControl = 80;   //set speed of car
 
 int SingPin = 12;         
 int distance = 0;
 int red, green, blue;
-
+int initial_motor_speed = 100;
+int sensor[3];
 int time = 40000;
 int count = 10;
-#define  L_Value  analogRead(A2)
-#define  M_Value  analogRead(A1)
-#define  R_Value  analogRead(A0)
 
-/*Car running status enumeration*/
+//Define buzzer pin
 const typedef enum {
   enRUN = 1,
   enBACK,
@@ -99,7 +97,6 @@ int g_modeMusic = 0; //0:the default state
 int g_musicSelect = 1;
 int g_modeCar = 0;
 boolean g_motor = false;
-int sensor[3];
 
 //Music
 enum enMusic
@@ -143,8 +140,7 @@ enum enMusic
 #define a5 880
 #define f5 698
 
-
-const PROGMEM  int ODe[70][2]
+const PROGMEM  int ODe[70][2]  
 {
   {e3,2},{e3,2},{f4,2},{g5,2},{g5,2},{f4,2},{e3,2},{d2,2},{c1,2},{c1,2},{d2,2},{e3,2},{e3,3},{d2,1},{d2,4},
   {e3,2},{e3,2},{f4,2},{g5,2},{g5,2},{f4,2},{e3,2},{d2,2},{c1,2},{c1,2},{d2,2},{e3,2},{d2,3},{c1,1},{c1,4},
@@ -154,7 +150,7 @@ const PROGMEM  int ODe[70][2]
 };
 
 
-const PROGMEM  int BIrthday[25][2]
+const PROGMEM  int BIrthday[25][2] 
 {
   {G5,2},{A6,2},{G5,2},{c1,2},{B7,4},
   {G5,2},{A6,2},{G5,2},{d2,2},{c1,4},
@@ -163,7 +159,7 @@ const PROGMEM  int BIrthday[25][2]
 };
 
 
-const PROGMEM  int STar[42][2]
+const PROGMEM  int STar[42][2] 
 {
   {c1,2},{c1,2},{g5,2},{g5,2},{a6,2},{a6,2},{g5,4},
   {f4,2},{f4,2},{e3,2},{e3,2},{d2,2},{d2,2},{c1,4},
@@ -173,7 +169,7 @@ const PROGMEM  int STar[42][2]
   {f4,2},{f4,2},{e3,2},{e3,2},{d2,2},{d2,2},{c1,4},
 };
 
-const PROGMEM  int MErryChristmas[36][2]  
+const PROGMEM  int MErryChristmas[36][2]   
 {
   {g5,1},{g5,1},{c6,2},{c6,1},{d6,1},{c6,1},{b5,1},{a5,2},{a5,2},{0,2},
   {a5,1},{a5,1},{d6,2},{d6,1},{e6,1},{d6,1},{c6,1},{b5,2},{g5,2},{0,2},
@@ -188,7 +184,6 @@ const PROGMEM  int BIngo[39][2]
   {e5,2},{e5,2},{f5,1},{f5,1},{f5,2},{d5,2},{d5,2},{e5,1},{e5,1},{e5,2},
   {c5,2},{c5,2},{d5,1},{d5,1},{d5,1},{c5,1},{b4,1},{g4,1},{a4,1},{b4,1},{c5,2},{c5,1},{c5,1}
 };
-
 
 int serial_putc( char c, struct __file * )
 {
@@ -234,9 +229,9 @@ void setup()
   strip.begin();
   strip.show();
   pwm.begin();
-  pwm.setPWMFreq(60); //Analog servos run at ~60 Hz updates
+  pwm.setPWMFreq(60); 
   Clear_All_PWM();
-  Servo180(1,90);
+  Servo180(1,90); //Analog servos run at ~60 Hz updates
   Servo180(2,90);
   Servo180(3,90);
   breathing_light(255, 40, 5);
@@ -248,7 +243,7 @@ void setup()
 * Function       setBuzzer_Tone
 * @author        Cindy
 * @date          2019.09.02
-* @brief        setBuzzer_Tone
+* @brief         setBuzzer_Tone
 * @param[in]     void
 * @param[out]    void
 * @retval        void
@@ -272,21 +267,21 @@ void setBuzzer_Tone(uint16_t frequency, uint32_t duration)
 }
 
 /**
-* Function      5 music
+* Function       5-music
 * @author        Cindy
 * @date          2019.09.02
-* @brief        5 music
+* @brief         5 music
 * @param[in]     void
 * @param[out]    void
 * @retval        void
 * @par History   no
 */
-void birthday(int j)   
+void birthday(int j)    
 {
     setBuzzer_Tone(pgm_read_word_near(&BIrthday[j][0]), pgm_read_word_near(&BIrthday[j][1])); 
 }
 
-void ode(int j)    
+void ode(int j)     
 {
     setBuzzer_Tone(pgm_read_word_near(&ODe[j][0]), pgm_read_word_near(&ODe[j][1])); 
 }
@@ -352,10 +347,10 @@ void music_Play(uint8_t v_song, uint8_t index)
 * @date         2019.06.25
 * @bried        180 Degree Steering Engine Rotation Angle
 * @param[in1]   index
-                    0: s1
-                    1: s2
-                    2: s3
-                    3: s4
+                    1: s1
+                    2: s2
+                    3: s3
+                    4: s4
 * @param[in2]   degree (0 <= degree <= 180)
 * @retval       void
 */
@@ -412,7 +407,7 @@ void Distance_test()
 void PCB_RGB(int R, int G, int B)
 {
   uint8_t i = 0;
-  R = map(R, 0, 255, 0, 200);
+  R = map(R, 0, 255, 0, 200);  
   G = map(G, 0, 255, 0, 200);
   B = map(B, 0, 255, 0, 200);
   uint32_t color = strip.Color(G, R, B);
@@ -434,10 +429,6 @@ void PCB_RGB(int R, int G, int B)
 */
 void  Ultrasonic_RGB(int R, int G, int B)
 {
-  /*R = map(R, 0, 255, 0, 100);  
-  G = map(G, 0, 255, 0, 100);
-  B = map(B, 0, 255, 0, 100);
-  */
   mRgb.setColor(0,G,R,B); 
   mRgb.show();
 }
@@ -445,8 +436,7 @@ void  Ultrasonic_RGB(int R, int G, int B)
 * Function       advance
 * @author        wusicaijuan
 * @date          2019.06.25
-
-* @param[in]     advance
+* @param[in]     小车前进
 * @param[out]    void
 * @retval        void
 * @par History   no
@@ -501,12 +491,12 @@ void brake()
 void left(int Speed)
 {
   Speed = map(Speed, 0, 255, 0, 4095);
-  pwm.setPWM(10, 0, Speed);     //Right front wheel Reverse
+  pwm.setPWM(10, 0, Speed);     
   pwm.setPWM(11, 0, 0);
-  pwm.setPWM(8, 0, Speed);      //Right rear wheel Reverse
+  pwm.setPWM(8, 0, Speed);     
   pwm.setPWM(9, 0, 0);      
 
-  pwm.setPWM(13, 0, 0);         //Left front wheel Stop
+  pwm.setPWM(13, 0, 0);         
   pwm.setPWM(12, 0, 0);
   pwm.setPWM(15, 0, 0);
   pwm.setPWM(14, 0, 0);
@@ -525,14 +515,14 @@ void left(int Speed)
 void right(int Speed)
 {
   Speed = map(Speed, 0, 255, 0, 4095);
-  pwm.setPWM(10, 0, 0);        //Right front wheel Stop
+  pwm.setPWM(10, 0, 0);        
   pwm.setPWM(11, 0, 0);
   pwm.setPWM(8, 0, 0);
   pwm.setPWM(9, 0, 0);
 
-  pwm.setPWM(13, 0, Speed);    //Left front wheel Reverse
+  pwm.setPWM(13, 0, Speed);    
   pwm.setPWM(12, 0, 0);
-  pwm.setPWM(15, 0, Speed);    //Left rear wheel Reverse
+  pwm.setPWM(15, 0, Speed);    
   pwm.setPWM(14, 0, 0);
 }
 
@@ -540,7 +530,7 @@ void right(int Speed)
 * Function       spin_left
 * @author        wusicaijuan
 * @date          2019.06.25
-* @brief         spin_left(left wheel back锛宺ight wheel advance)
+* @brief         spin_left(left wheel back and right wheel advance)
 * @param[in]     Speed
 * @param[out]    void
 * @retval        void
@@ -549,22 +539,22 @@ void right(int Speed)
 void spin_left(int Speed)
 {
   Speed = map(Speed, 0, 255, 0, 4095);
-  pwm.setPWM(10, 0, Speed);      //Right front wheel Forword
+  pwm.setPWM(10, 0, Speed);      
   pwm.setPWM(11, 0, 0);
-  pwm.setPWM(8, 0, Speed);       //Right rear wheel Forword
+  pwm.setPWM(8, 0, Speed);      
   pwm.setPWM(9, 0, 0);
 
   pwm.setPWM(13, 0, 0);
-  pwm.setPWM(12, 0, Speed);      //Left front wheel Back
+  pwm.setPWM(12, 0, Speed);     
   pwm.setPWM(15, 0, 0);
-  pwm.setPWM(14, 0, Speed);      //Left rear wheel Back
+  pwm.setPWM(14, 0, Speed);      
 }
 
 /**
 * Function       spin_right
 * @author        wusicaijuan
 * @date          2019.06.25
-* @brief         spin_right(left wheel advance锛宺ight wheel back)
+* @brief         spin_right(left wheel advance and right wheel back)
 * @param[in]     Speed
 * @param[out]    void
 * @retval        void
@@ -574,13 +564,13 @@ void spin_right(int Speed)
 {
   Speed = map(Speed, 0, 255, 0, 4095);
   pwm.setPWM(10, 0, 0);
-  pwm.setPWM(11, 0, Speed);    //Right front wheel Back
+  pwm.setPWM(11, 0, Speed);    
   pwm.setPWM(8, 0, 0);
-  pwm.setPWM(9, 0, Speed);     //Right rear wheel Back
+  pwm.setPWM(9, 0, Speed);     
 
-  pwm.setPWM(13, 0, Speed);    //Left front wheel Forword
+  pwm.setPWM(13, 0, Speed);    
   pwm.setPWM(12, 0, 0);
-  pwm.setPWM(15, 0, Speed);    //Left rear wheel Forword
+  pwm.setPWM(15, 0, Speed);    
   pwm.setPWM(14, 0, 0);
 }
 /**
@@ -597,14 +587,14 @@ void back(int Speed)
 {
   Speed = map(Speed, 0, 255, 0, 4095);
   pwm.setPWM(10, 0, 0);
-  pwm.setPWM(11, 0, Speed); //Right front wheel Reverse
+  pwm.setPWM(11, 0, Speed);
   pwm.setPWM(8, 0, 0);
-  pwm.setPWM(9, 0, Speed); //Right rear wheel Reverse
+  pwm.setPWM(9, 0, Speed); 
 
   pwm.setPWM(13, 0, 0);
-  pwm.setPWM(12, 0, Speed);  //Left front wheel Reverse
+  pwm.setPWM(12, 0, Speed);  
   pwm.setPWM(15, 0, 0);
-  pwm.setPWM(14, 0, Speed); //Left rear wheel Reverse
+  pwm.setPWM(14, 0, Speed); 
 }
 
 /**
@@ -675,24 +665,28 @@ void Tracking_Mode()
 {
   sensor[0] = analogRead(A0);
   sensor[1] = analogRead(A1);
-  sensor[2] = analogRead(A2);  
-  //100,100,100 These three parameters can be modified according to your actual environment
-  if(sensor[0]>100){
+  sensor[2] = analogRead(A2);
+  if(sensor[0]>100)   //100,100,100 These three parameters can be modified according to your actual environment
+  {
     sensor[0] = 1;
   }
-  else{
+  else
+  {
     sensor[0] = 0;
   }
-  if(sensor[1]>100){
+  if(sensor[1]>100)
+  {
     sensor[1] = 1;
   }
   else{
     sensor[1] = 0;
   }
-  if(sensor[2]>100){
+  if(sensor[2]>100)
+  {
     sensor[2] = 1;
   }
-  else{
+  else
+  {
     sensor[2] = 0;
   }
   
@@ -718,7 +712,7 @@ void Tracking_Mode()
   }
   else if ((sensor[0] == 0) && (sensor[1] == 0) && (sensor[2] == 0))
   {
-    //Clear_All_PWM(); //The tracking probes all detect white and remain in the previous state.
+    //Clear_All_PWM();//The tracking probes all detect white and remain in the previous state.
   }
   else if ((sensor[0] == 1) && (sensor[1] == 1) && (sensor[2] == 1))
   {
@@ -818,7 +812,7 @@ int ult_check_distance_and_action(uint8_t p_direction)
     ret = -1;
     return ret;
   }
-  mRgb.setColor(0,RGB_GREEN);  //There are two RGB light on the Ultrasonic module No.1 and No.2 
+  mRgb.setColor(0,RGB_GREEN);  
   mRgb.show();
   if (LEFT_DIRECTION == p_direction) 
   {
@@ -830,7 +824,7 @@ int ult_check_distance_and_action(uint8_t p_direction)
   {
     Servo180(1, 90);      
   } 
-  else if (ALL_CHECKED_START_ACTION == p_direction)   //left,right,fornt detected is complete
+  else if (ALL_CHECKED_START_ACTION == p_direction)   
   {
     if (0 == cnt) 
     {
@@ -839,27 +833,27 @@ int ult_check_distance_and_action(uint8_t p_direction)
     }
     cnt++;    
 
-    if (LeftDistance < 25 && RightDistance < 25 && FrontDistance < 25) 
+    if (LeftDistance < 25 && RightDistance < 25 && FrontDistance < 25)  
     {
       mRgb.setColor(0,RGB_PURPLE);  
       mRgb.show();
-      spin_right(70);      
+      spin_right(80);      
       delay(19);
     } else if (LeftDistance >= RightDistance) 
     {
       mRgb.setColor(0,RGB_BLUE);  
       mRgb.show();
-      spin_left(70);      
+      spin_left(80);      
       delay(13);
     } else if (LeftDistance < RightDistance) 
     {
-      mRgb.setColor(0,RGB_YELLOW);  //There are two RGB light on the Ultrasonic module No.1 and No.2 
+      mRgb.setColor(0,RGB_YELLOW);  
       mRgb.show();
-      spin_right(70);    //When approaching obstacles,turn right at about 90 degrees
+      spin_right(80);    
       delay(13);
     }
 
-    if (cnt > 50)    //spin left spin right delay 19*50/13*50
+    if (cnt > 50)  
     {
       brake();
       LeftDistance = 0;
@@ -876,7 +870,7 @@ int ult_check_distance_and_action(uint8_t p_direction)
   }
     delay(20);
     cnt++;
-    if (cnt > 20)  //The servos need to be delayed every time they rotate.  delay 20ms
+    if (cnt > 20)  
     {
       cnt = 0;
       Distance(); 
@@ -951,7 +945,7 @@ void UltrasonicAvoidServoMode()
       distance_smaller_25 = 0;
     }
     bak_distance = 0;
-    advance(70);
+    advance(95);
   }
 }
 /********************************************************************************************************/
@@ -1018,7 +1012,7 @@ void color_light(int pos)
 }
 
 /**
-* Function       ServoColorRGBMode(brightness,time,increament)
+* Function       ServoColorRGBMode
 * @author        wusicaijuan
 * @date          2019.06.26
 * @brief         LOGO_light
@@ -1115,7 +1109,7 @@ void serial_data_parse()
         NewLineReceived = false;
         return;
     }
-    if (g_modeSelect != 0) //
+    if (g_modeSelect != 0) 
     {
       InputString = "";                   
       NewLineReceived = false;
@@ -1149,7 +1143,7 @@ void serial_data_parse()
       }
       InputString = ""; //Clear serial port data
       NewLineReceived = false;
-      return; //Jump out of this time loop()
+      return;  //Jump out of this time loop()
     }
     //$Servo,LRS#  servo stop
     //$Servo,LRL#  servo rotate left
@@ -1173,6 +1167,7 @@ void serial_data_parse()
          return;
       }
     }
+
   //Parse the data sent from the serial port and execute the corresponding command
   //eg:$1,0,0,0#    car advance
   //Detected The length of the data. Prevent mistakes from judging
@@ -1193,7 +1188,7 @@ void serial_data_parse()
      //Make whistle
     if (InputString[5] == '1')     
     {
-      whistle();
+      whistle();  //Make whistle
     }
     //Car acceleration and deceleration judgment
     if (InputString[3] == '1') //Acceleration, change 20 each time
@@ -1203,18 +1198,18 @@ void serial_data_parse()
       {
         CarSpeedControl = 150;
       }
-      InputString = ""; //Clear serial port data
+      InputString = "";
       NewLineReceived = false;
       return;
     }
-    if (InputString[3] == '2') //Decelerate, change 20 each time
+    if (InputString[3] == '2') 
     {
       CarSpeedControl -= 20;
       if (CarSpeedControl < 50)
       {
         CarSpeedControl = 50;
       }
-      InputString = ""; //Clear serial port data
+      InputString = ""; 
       NewLineReceived = false;
       return;
     }
@@ -1245,8 +1240,9 @@ void serial_data_parse()
       g_CarState = enSTOP;
       break;
     }
-     InputString = "";         //Clear serial port data
+     InputString = "";         
     NewLineReceived = false;
+    
     //According to the state of the car, do the corresponding action
     switch (g_CarState)
     {
@@ -1276,7 +1272,7 @@ void serial_data_parse()
       break;
     }
   }
-  InputString = ""; //Clear serial port data
+  InputString = ""; 
   NewLineReceived = false;
   return;
 }
@@ -1285,7 +1281,7 @@ void serial_data_parse()
 * Function       serial_data_postback
 * @author        Cindy
 * @date          2019.09.11
-* @brief         Transfer the collected sensor data to the host computer锛圓PK) through the serial port.
+* @brief         Transfer the collected sensor data to the host computer APK through the serial port.
 * @param[in]     void
 * @retval        void
 * @par History   NO
@@ -1446,23 +1442,20 @@ void loop()
       }
   }
 
-  if (g_modeSelect == 0 && g_modeMusic == 0 && g_motor == false)   //Reporting ultrasound data
-  {
-    time--;
-    if (time == 0)
-    {
-      count--;
-      time = 40000;
-      if (count == 0)
-      {
-        serial_data_postback();
-        time = 40000;
-        count = 10;
-      }
-    }
-  }
+  // if (g_modeSelect == 0 && g_modeMusic == 0 && g_motor == false)   //Reporting ultrasound data
+  // {
+  //   time--;
+  //   if (time == 0)
+  //   {
+  //     count--;
+  //     time = 40000;
+  //     if (count == 0)
+  //     {
+  //       serial_data_postback();
+  //       time = 40000;
+  //       count = 10;
+  //     }
+  //   }
+  // }
   HServo_State();  
 }
-
-
-
